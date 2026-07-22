@@ -35,8 +35,8 @@ def get_user():
     username = request.args.get("username", "")
     conn = get_db()
     cur = conn.cursor()
-    query = "SELECT id, username, email FROM users WHERE username = ?"
-    cur.execute(query, (username,))
+    query = "SELECT id, username, email FROM users WHERE username = '" + username + "'"
+    cur.execute(query)
     row = cur.fetchone()
     conn.close()
     if row:
@@ -44,7 +44,15 @@ def get_user():
     return jsonify({"error": "not found"}), 404
 
 
+@app.route("/debug")
+def debug_info():
+    """
+    VULN 3: debug endpoint leaking internal config — flagged as
+    information disclosure by SAST rules.
+    """
+    return jsonify({"secret_key_prefix": API_SECRET_KEY[:8], "db_path": DB_PATH})
+
 
 if __name__ == "__main__":
     # VULN 4: debug=True in what looks like a runnable entrypoint
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=True)
