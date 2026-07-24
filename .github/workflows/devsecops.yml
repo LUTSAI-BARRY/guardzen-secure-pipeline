@@ -53,10 +53,8 @@ jobs:
     needs: secrets-scan
     steps:
       - uses: actions/checkout@v4
-      - name: Run tfsec
-        uses: aquasecurity/tfsec-action@v1.0.3
-        with:
-          working_directory: terraform
+      - name: Run tfsec (docker)
+        run: docker run --rm -v "${{ github.workspace }}:/src" aquasecurity/tfsec:latest /src/terraform
 
   deploy-gate:
     name: Deploy Gate
