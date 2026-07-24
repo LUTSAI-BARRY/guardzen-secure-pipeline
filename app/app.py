@@ -47,4 +47,4 @@ def get_user():
 
 if __name__ == "__main__":
     # VULN 4: debug=True in what looks like a runnable entrypoint
-    app.run(host="0.0.0.0", port=5000, debug=False)
+    app.run(host="0.0.0.0", port=5000, debug=False)  # nosemgrep: python.flask.security.audit.app-run-param-config.avoid_app_run_with_bad_host -- required for Docker container networking
